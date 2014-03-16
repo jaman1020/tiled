@@ -50,6 +50,7 @@ public:
     MapDocument *createMap();
 
 private slots:
+    void applyMapType(bool selected);
     void refreshPixelSize();
 
 private:

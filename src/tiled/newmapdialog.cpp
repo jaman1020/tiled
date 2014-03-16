@@ -31,11 +31,7 @@
 #include <QSettings>
 #include <QMessageBox>
 
-static const char * const ORIENTATION_KEY = "Map/Orientation";
-static const char * const MAP_WIDTH_KEY = "Map/Width";
-static const char * const MAP_HEIGHT_KEY = "Map/Height";
-static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
-static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
+static const char * const MAP_SIZE_KEY = "Map/Size";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -50,30 +46,11 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
-    const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
-    const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
-    const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
-    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
-                                    32).toInt();
+    const QString mapSize = s->value(QLatin1String(MAP_SIZE_KEY),
+                                     QLatin1String("Big")).toString();
 
-    mUi->layerFormatLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Layer format:"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
-
-    mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
-    mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
-    mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
-
-    mUi->orientation->setCurrentIndex(orientation);
-    mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
-    mUi->mapWidth->setValue(mapWidth);
-    mUi->mapHeight->setValue(mapHeight);
-    mUi->tileWidth->setValue(tileWidth);
-    mUi->tileHeight->setValue(tileHeight);
+    if (mapSize == QLatin1String("Small"))
+        mUi->radioButtonSmallMap->setChecked(true);
 
     // Make the font of the pixel size label smaller
     QFont font = mUi->pixelSizeLabel->font();
@@ -81,12 +58,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     font.setPointSizeF(size - 1);
     mUi->pixelSizeLabel->setFont(font);
 
-    connect(mUi->mapWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
-    refreshPixelSize();
+    connect(mUi->radioButtonSmallMap, SIGNAL(toggled(bool)),
+            this, SLOT(applyMapType(bool)));
+    connect(mUi->radioButtonBigMap, SIGNAL(toggled(bool)),
+            this, SLOT(applyMapType(bool)));
+
+    applyMapType(true);
 }
 
 NewMapDialog::~NewMapDialog()
@@ -104,12 +81,8 @@ MapDocument *NewMapDialog::createMap()
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
 
-    const int orientationIndex = mUi->orientation->currentIndex();
-    QVariant orientationData = mUi->orientation->itemData(orientationIndex);
-    const Map::Orientation orientation =
-            static_cast<Map::Orientation>(orientationData.toInt());
-    const Map::LayerDataFormat layerFormat =
-            static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
+    const Map::Orientation orientation = Map::Orthogonal;
+    const Map::LayerDataFormat layerFormat = Map::Base64Zlib;
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
@@ -117,53 +90,56 @@ MapDocument *NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
 
-    const size_t gigabyte = 1073741824;
-    const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
-
     // Add a tile layer to new maps of reasonable size
-    if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
-                                    mapWidth, mapHeight));
-    } else {
-        const double gigabytes = (double) memory / gigabyte;
-        QMessageBox::warning(this, tr("Memory Usage Warning"),
-                             tr("Tile layers for this map will consume %L1 GB "
-                                "of memory each. Not creating one by default.")
-                             .arg(gigabytes, 0, 'f', 2));
-    }
+    map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
+                                mapWidth, mapHeight));
+    map->addLayer(new TileLayer(tr("Tile Layer 2"), 0, 0,
+                                mapWidth, mapHeight));
+    map->addLayer(new TileLayer(tr("Tile Layer 3"), 0, 0,
+                                mapWidth, mapHeight));
+    map->addLayer(new TileLayer(tr("Tile Layer 4"), 0, 0,
+                                mapWidth, mapHeight));
+
+    QLatin1String mapSize("Big");
+    if (mUi->radioButtonSmallMap->isChecked())
+        mapSize = QLatin1String("Small");
 
     // Store settings for next time
-    Preferences *prefs = Preferences::instance();
-    prefs->setLayerDataFormat(layerFormat);
     QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
-    s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
-    s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
-    s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
-    s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
+    s->setValue(QLatin1String(MAP_SIZE_KEY), mapSize);
 
     return new MapDocument(map);
 }
 
+void NewMapDialog::applyMapType(bool selected)
+{
+    if (!selected)
+        return;
+
+    if (mUi->radioButtonBigMap->isChecked()) {
+        mUi->mapWidth->setValue(15);
+        mUi->mapHeight->setValue(12);
+        mUi->tileWidth->setValue(138);
+        mUi->tileHeight->setValue(138);
+    } else {
+        mUi->mapWidth->setValue(30);
+        mUi->mapHeight->setValue(24);
+        mUi->tileWidth->setValue(69);
+        mUi->tileHeight->setValue(69);
+    }
+
+    refreshPixelSize();
+}
+
 void NewMapDialog::refreshPixelSize()
 {
-    const int orientation = mUi->orientation->currentIndex();
-    const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
+    const Map map(Map::Orthogonal,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
                   mUi->tileHeight->value());
 
-    QSize size;
-
-    switch (map.orientation()) {
-    case Map::Isometric:
-        size = IsometricRenderer(&map).mapSize();
-        break;
-    default:
-        size = OrthogonalRenderer(&map).mapSize();
-        break;
-    }
+    QSize size = OrthogonalRenderer(&map).mapSize();
 
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
                                  .arg(size.width())
