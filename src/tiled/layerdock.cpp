@@ -67,29 +67,11 @@ LayerDock::LayerDock(QWidget *parent):
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    QMenu *newLayerMenu = new QMenu(this);
-    newLayerMenu->addAction(handler->actionAddTileLayer());
-    newLayerMenu->addAction(handler->actionAddObjectGroup());
-    newLayerMenu->addAction(handler->actionAddImageLayer());
-
-    const QIcon newIcon(QLatin1String(":/images/16x16/document-new.png"));
-    QToolButton *newLayerButton = new QToolButton;
-    newLayerButton->setPopupMode(QToolButton::InstantPopup);
-    newLayerButton->setMenu(newLayerMenu);
-    newLayerButton->setIcon(newIcon);
-    Utils::setThemeIcon(newLayerButton, "document-new");
-
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(QSize(16, 16));
 
-    buttonContainer->addWidget(newLayerButton);
-    buttonContainer->addAction(handler->actionMoveLayerUp());
-    buttonContainer->addAction(handler->actionMoveLayerDown());
-    buttonContainer->addAction(handler->actionDuplicateLayer());
-    buttonContainer->addAction(handler->actionRemoveLayer());
-    buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
 
     QVBoxLayout *listAndToolBar = new QVBoxLayout;
@@ -302,45 +284,14 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     const LayerModel *m = mMapDocument->layerModel();
     const int layerIndex = m->toLayerIndex(index);
 
+    if (layerIndex == -1)
+        return;
+
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
     QMenu menu;
-    menu.addAction(handler->actionAddTileLayer());
-    menu.addAction(handler->actionAddObjectGroup());
-    menu.addAction(handler->actionAddImageLayer());
-
-    if (layerIndex >= 0) {
-        menu.addAction(handler->actionDuplicateLayer());
-        menu.addAction(handler->actionMergeLayerDown());
-        menu.addAction(handler->actionRemoveLayer());
-        menu.addSeparator();
-        menu.addAction(handler->actionMoveLayerUp());
-        menu.addAction(handler->actionMoveLayerDown());
-        menu.addSeparator();
-        menu.addAction(handler->actionToggleOtherLayers());
-        menu.addSeparator();
-        menu.addAction(handler->actionLayerProperties());
-    }
-
+    menu.addAction(handler->actionToggleOtherLayers());
+    menu.addSeparator();
+    menu.addAction(handler->actionLayerProperties());
     menu.exec(event->globalPos());
-}
-
-void LayerView::keyPressEvent(QKeyEvent *event)
-{
-    if (!mMapDocument)
-        return;
-
-    const QModelIndex index = currentIndex();
-    if (!index.isValid())
-        return;
-
-    const LayerModel *m = mMapDocument->layerModel();
-    const int layerIndex = m->toLayerIndex(index);
-
-    if (event->key() == Qt::Key_Delete) {
-        mMapDocument->removeLayer(layerIndex);
-        return;
-    }
-
-    QTreeView::keyPressEvent(event);
 }

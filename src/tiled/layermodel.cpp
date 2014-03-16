@@ -123,7 +123,7 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractListModel::flags(index);
     if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+        rc |= Qt::ItemIsUserCheckable;
     return rc;
 }
 

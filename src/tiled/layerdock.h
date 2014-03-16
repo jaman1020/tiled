@@ -92,7 +92,6 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void currentRowChanged(const QModelIndex &index);

@@ -258,17 +258,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mLayerMenu->addAction(mActionHandler->actionAddImageLayer());
-    mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
-    mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
-    mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
-    mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
     mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());
-    mLayerMenu->addAction(mActionHandler->actionMoveLayerUp());
-    mLayerMenu->addAction(mActionHandler->actionMoveLayerDown());
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionToggleOtherLayers());
     mLayerMenu->addSeparator();

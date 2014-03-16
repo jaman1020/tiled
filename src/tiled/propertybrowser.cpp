@@ -354,7 +354,7 @@ void PropertyBrowser::addMapObjectProperties()
 
 void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
-    createProperty(NameProperty, QVariant::String, tr("Name"), parent);
+    createProperty(NameProperty, QVariant::String, tr("Name"), parent)->setEnabled(false);
     createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
 
     QtVariantProperty *opacityProperty =

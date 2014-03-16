@@ -194,10 +194,12 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
 Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
+
+    if (index.parent().isValid()) // MapObject name and type
+        rc |= Qt::ItemIsEditable;
     if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-    else if (index.parent().isValid())
-        rc |= Qt::ItemIsEditable; // MapObject type
+        rc |= Qt::ItemIsUserCheckable;
+
     return rc;
 }
 
