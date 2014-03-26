@@ -247,9 +247,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mCommandButton = new CommandButton(this);
     mUi->mainToolBar->addWidget(mCommandButton);
 
-    mUi->menuMap->insertAction(mUi->actionOffsetMap,
-                               mActionHandler->actionCropToSelection());
-
     mRandomButton = new QToolButton(this);
     mRandomButton->setToolTip(tr("Random Mode"));
     mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
@@ -305,7 +302,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
-    connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
@@ -348,7 +344,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
     setThemeIcon(mUi->actionNewTileset, "document-new");
-    setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -1349,7 +1344,6 @@ void MainWindow::updateActions()
     mUi->actionDelete->setEnabled(canCopy);
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
-    mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAutoMap->setEnabled(map);

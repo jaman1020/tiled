@@ -21,7 +21,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
    </layout>
@@ -32,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -87,7 +96,6 @@
     <addaction name="actionNewTileset"/>
     <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
-    <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
     <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
@@ -214,15 +222,6 @@
    </property>
    <property name="menuRole">
     <enum>QAction::AboutQtRole</enum>
-   </property>
-  </action>
-  <action name="actionResizeMap">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-page-setup.png</normaloff>:/images/16x16/document-page-setup.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Resize Map...</string>
    </property>
   </action>
   <action name="actionMapProperties">
