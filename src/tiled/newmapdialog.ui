@@ -213,19 +213,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QRadioButton" name="radioButtonSmallMap">
+        <property name="text">
+         <string>Small</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QRadioButton" name="radioButtonBigMap">
         <property name="text">
          <string>Big</string>
         </property>
         <property name="checked">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButtonSmallMap">
-        <property name="text">
-         <string>Small</string>
         </property>
        </widget>
       </item>

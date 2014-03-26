@@ -47,7 +47,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
     const QString mapSize = s->value(QLatin1String(MAP_SIZE_KEY),
-                                     QLatin1String("Big")).toString();
+                                     QLatin1String("Small")).toString();
 
     if (mapSize == QLatin1String("Small"))
         mUi->radioButtonSmallMap->setChecked(true);
@@ -90,14 +90,24 @@ MapDocument *NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
 
-    // Add a tile layer to new maps of reasonable size
+    TileLayer *metaLayer = new TileLayer(tr("Meta"), 0, 0,
+                                         mapWidth, mapHeight);
+
+    // Set the Meta layer to invisible by default
+    metaLayer->setVisible(false);
+
+    // Set some commonly used properties
+    metaLayer->setProperty(QLatin1String("Up"), QString());
+    metaLayer->setProperty(QLatin1String("Down"), QString());
+    metaLayer->setProperty(QLatin1String("Left"), QString());
+    metaLayer->setProperty(QLatin1String("Right"), QString());
+    metaLayer->setProperty(QLatin1String("NumCommands"), QLatin1String("5"));
+
+    // Add the default tile layers
+    map->addLayer(metaLayer);
     map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
                                 mapWidth, mapHeight));
-    map->addLayer(new TileLayer(tr("Tile Layer 2"), 0, 0,
-                                mapWidth, mapHeight));
-    map->addLayer(new TileLayer(tr("Tile Layer 3"), 0, 0,
-                                mapWidth, mapHeight));
-    map->addLayer(new TileLayer(tr("Tile Layer 4"), 0, 0,
+    map->addLayer(new TileLayer(tr("Coins"), 0, 0,
                                 mapWidth, mapHeight));
 
     QLatin1String mapSize("Big");
@@ -117,15 +127,15 @@ void NewMapDialog::applyMapType(bool selected)
         return;
 
     if (mUi->radioButtonBigMap->isChecked()) {
-        mUi->mapWidth->setValue(15);
-        mUi->mapHeight->setValue(12);
-        mUi->tileWidth->setValue(138);
-        mUi->tileHeight->setValue(138);
-    } else {
         mUi->mapWidth->setValue(30);
         mUi->mapHeight->setValue(24);
         mUi->tileWidth->setValue(69);
         mUi->tileHeight->setValue(69);
+    } else {
+        mUi->mapWidth->setValue(15);
+        mUi->mapHeight->setValue(12);
+        mUi->tileWidth->setValue(138);
+        mUi->tileHeight->setValue(138);
     }
 
     refreshPixelSize();
