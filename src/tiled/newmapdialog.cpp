@@ -24,6 +24,7 @@
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "preferences.h"
 #include "tilelayer.h"
@@ -109,6 +110,8 @@ MapDocument *NewMapDialog::createMap()
                                 mapWidth, mapHeight));
     map->addLayer(new TileLayer(tr("Coins"), 0, 0,
                                 mapWidth, mapHeight));
+    map->addLayer(new ObjectGroup(tr("Objects"), 0, 0,
+                                  mapWidth, mapHeight));
 
     QLatin1String mapSize("Big");
     if (mUi->radioButtonSmallMap->isChecked())
