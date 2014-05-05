@@ -318,6 +318,13 @@ void PropertyBrowser::addMapProperties()
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
+
+    createProperty(LooperProperty, QVariant::Bool, tr("Kodable Looper"), groupProperty);
+    QtVariantProperty *numCommandsProperty =
+            createProperty(NumCommandsProperty, QVariant::Int, tr("Kodable Command Count"), groupProperty);
+    numCommandsProperty->setAttribute(QLatin1String("minimum"), 1);
+    numCommandsProperty->setAttribute(QLatin1String("maximum"), 8);
+
     addProperty(groupProperty);
 }
 
@@ -447,6 +454,21 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperties(mMapDocument,
                                           val.value<QColor>(),
                                           map->layerDataFormat());
+        break;
+    case LooperProperty:
+        if (val.toBool()) {
+            command = new SetProperty(mMapDocument, map,
+                                      QLatin1String("Looper"),
+                                      QLatin1String("true"));
+        } else {
+            command = new RemoveProperty(mMapDocument, map,
+                                         QLatin1String("Looper"));
+        }
+        break;
+    case NumCommandsProperty:
+        command = new SetProperty(mMapDocument, map,
+                                  QLatin1String("NumCommands"),
+                                  QString::number(val.toInt()));
         break;
     default:
         break;
@@ -686,6 +708,8 @@ void PropertyBrowser::updateProperties()
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;
         mIdToProperty[ColorProperty]->setValue(backgroundColor);
+        mIdToProperty[LooperProperty]->setValue(map->hasProperty(QLatin1String("Looper")));
+        mIdToProperty[NumCommandsProperty]->setValue(map->property(QLatin1String("NumCommands")).toInt());
         break;
     }
     case Object::MapObjectType: {

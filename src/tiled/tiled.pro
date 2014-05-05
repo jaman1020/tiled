@@ -86,6 +86,7 @@ SOURCES += aboutdialog.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
+    kodablemapvalidator.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -206,6 +207,7 @@ HEADERS += aboutdialog.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
+    kodablemapvalidator.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \

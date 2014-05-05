@@ -39,6 +39,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class KodableMapValidator;
+
 namespace Tiled {
 
 class TileLayer;
@@ -250,6 +252,7 @@ private:
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;
+    KodableMapValidator *mKodableMapValidator;
 };
 
 } // namespace Internal

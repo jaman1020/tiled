@@ -109,6 +109,11 @@ private:
         DrawOrderProperty,
         TileOffsetProperty,
         IdProperty,
+
+        // Kodable
+        LooperProperty,
+        NumCommandsProperty,
+
         CustomProperty
     };
 

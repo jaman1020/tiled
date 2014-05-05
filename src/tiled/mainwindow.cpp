@@ -39,6 +39,7 @@
 #include "erasetiles.h"
 #include "bucketfilltool.h"
 #include "filltiles.h"
+#include "kodablemapvalidator.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "layerdock.h"
@@ -130,6 +131,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
     , mToolManager(new ToolManager(this))
+    , mKodableMapValidator(new KodableMapValidator(this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -466,6 +468,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(autoMappingWarning()));
     connect(mAutomappingManager, SIGNAL(errorsOccurred()),
             this, SLOT(autoMappingError()));
+
+    connect(undoGroup, SIGNAL(indexChanged(int)),
+            mKodableMapValidator, SLOT(validateCurrentMap()));
+    connect(mKodableMapValidator, SIGNAL(errorChanged(QString)),
+            statusBar(), SLOT(showMessage(QString)));
 }
 
 MainWindow::~MainWindow()
