@@ -33,6 +33,8 @@
 #include <QMessageBox>
 
 static const char * const MAP_SIZE_KEY = "Map/Size";
+static const char * const MAP_LOOPER_KEY = "Map/Looper";
+static const char * const MAP_NUMCOMMANDS_KEY = "Map/NumCommands";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -53,18 +55,13 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     if (mapSize == QLatin1String("Small"))
         mUi->radioButtonSmallMap->setChecked(true);
 
-    // Make the font of the pixel size label smaller
-    QFont font = mUi->pixelSizeLabel->font();
-    const qreal size = QFontInfo(font).pointSizeF();
-    font.setPointSizeF(size - 1);
-    mUi->pixelSizeLabel->setFont(font);
+    mUi->looper->setChecked(s->value(QLatin1String(MAP_LOOPER_KEY), true).toBool());
+    mUi->commandCount->setValue(s->value(QLatin1String(MAP_NUMCOMMANDS_KEY), 8).toInt());
 
     connect(mUi->radioButtonSmallMap, SIGNAL(toggled(bool)),
             this, SLOT(applyMapType(bool)));
     connect(mUi->radioButtonBigMap, SIGNAL(toggled(bool)),
             this, SLOT(applyMapType(bool)));
-
-    applyMapType(true);
 }
 
 NewMapDialog::~NewMapDialog()
@@ -77,10 +74,22 @@ MapDocument *NewMapDialog::createMap()
     if (exec() != QDialog::Accepted)
         return 0;
 
-    const int mapWidth = mUi->mapWidth->value();
-    const int mapHeight = mUi->mapHeight->value();
-    const int tileWidth = mUi->tileWidth->value();
-    const int tileHeight = mUi->tileHeight->value();
+    int mapWidth;
+    int mapHeight;
+    int tileWidth;
+    int tileHeight;
+
+    if (mUi->radioButtonBigMap->isChecked()) {
+        mapWidth = 30;
+        mapHeight = 24;
+        tileWidth = 69;
+        tileHeight = 69;
+    } else {
+        mapWidth = 15;
+        mapHeight = 12;
+        tileWidth = 138;
+        tileHeight = 138;
+    }
 
     const Map::Orientation orientation = Map::Orthogonal;
     const Map::LayerDataFormat layerFormat = Map::Base64Zlib;
@@ -93,21 +102,22 @@ MapDocument *NewMapDialog::createMap()
 
     TileLayer *metaLayer = new TileLayer(tr("Meta"), 0, 0,
                                          mapWidth, mapHeight);
+    TileLayer *tileLayer1 = new TileLayer(tr("Tile Layer 1"), 0, 0,
+                                          mapWidth, mapHeight);
 
     // Set the Meta layer to invisible by default
     metaLayer->setVisible(false);
 
     // Set some commonly used properties
-    metaLayer->setProperty(QLatin1String("Up"), QString());
-    metaLayer->setProperty(QLatin1String("Down"), QString());
-    metaLayer->setProperty(QLatin1String("Left"), QString());
-    metaLayer->setProperty(QLatin1String("Right"), QString());
-    metaLayer->setProperty(QLatin1String("NumCommands"), QLatin1String("5"));
+    const int commandCount = mUi->commandCount->value();
+    const bool enableLooper = mUi->looper->isChecked();
+    tileLayer1->setProperty(QLatin1String("NumCommands"), QString::number(commandCount));
+    if (enableLooper)
+        tileLayer1->setProperty(QLatin1String("Looper"), QLatin1String("true"));
 
     // Add the default tile layers
     map->addLayer(metaLayer);
-    map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
-                                mapWidth, mapHeight));
+    map->addLayer(tileLayer1);
     map->addLayer(new TileLayer(tr("Coins"), 0, 0,
                                 mapWidth, mapHeight));
     map->addLayer(new ObjectGroup(tr("Objects"), 0, 0,
@@ -120,41 +130,8 @@ MapDocument *NewMapDialog::createMap()
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(MAP_SIZE_KEY), mapSize);
+    s->setValue(QLatin1String(MAP_LOOPER_KEY), enableLooper);
+    s->setValue(QLatin1String(MAP_NUMCOMMANDS_KEY), commandCount);
 
     return new MapDocument(map);
-}
-
-void NewMapDialog::applyMapType(bool selected)
-{
-    if (!selected)
-        return;
-
-    if (mUi->radioButtonBigMap->isChecked()) {
-        mUi->mapWidth->setValue(30);
-        mUi->mapHeight->setValue(24);
-        mUi->tileWidth->setValue(69);
-        mUi->tileHeight->setValue(69);
-    } else {
-        mUi->mapWidth->setValue(15);
-        mUi->mapHeight->setValue(12);
-        mUi->tileWidth->setValue(138);
-        mUi->tileHeight->setValue(138);
-    }
-
-    refreshPixelSize();
-}
-
-void NewMapDialog::refreshPixelSize()
-{
-    const Map map(Map::Orthogonal,
-                  mUi->mapWidth->value(),
-                  mUi->mapHeight->value(),
-                  mUi->tileWidth->value(),
-                  mUi->tileHeight->value());
-
-    QSize size = OrthogonalRenderer(&map).mapSize();
-
-    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
-                                 .arg(size.width())
-                                 .arg(size.height()));
 }
