@@ -1522,7 +1522,7 @@ void MainWindow::readSettings()
 void MainWindow::updateWindowTitle()
 {
     if (mMapDocument) {
-        setWindowTitle(tr("[*]%1 - Tiled").arg(mMapDocument->displayName()));
+        setWindowTitle(tr("[*]%1 - Kodable Level Editor").arg(mMapDocument->displayName()));
         setWindowFilePath(mMapDocument->fileName());
         setWindowModified(mMapDocument->isModified());
     } else {

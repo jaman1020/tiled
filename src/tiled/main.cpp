@@ -131,11 +131,11 @@ int main(int argc, char *argv[])
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("Tiled"));
+    a.setApplicationName(QLatin1String("Kodable Level Editor"));
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
-    a.setApplicationVersion(QLatin1String("0.9.1"));
+    a.setApplicationVersion(QLatin1String("1.0"));
 #endif
 
 #ifdef Q_OS_MAC
