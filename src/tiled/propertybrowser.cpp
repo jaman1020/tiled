@@ -109,13 +109,15 @@ void PropertyBrowser::setObject(Object *object)
     switch (object->typeId()) {
     case Object::MapType:               addMapProperties(); break;
     case Object::MapObjectType:         addMapObjectProperties(); break;
-    case Object::LayerType:
-        switch (static_cast<Layer*>(object)->layerType()) {
-        case Layer::TileLayerType:      addTileLayerProperties();   break;
+    case Object::LayerType: {
+        Layer *layer = static_cast<Layer*>(object);
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:      addTileLayerProperties(static_cast<TileLayer*>(layer));   break;
         case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
         case Layer::ImageLayerType:     addImageLayerProperties();  break;
         }
         break;
+    }
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
@@ -319,12 +321,6 @@ void PropertyBrowser::addMapProperties()
 
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
 
-    createProperty(LooperProperty, QVariant::Bool, tr("Kodable Looper"), groupProperty);
-    QtVariantProperty *numCommandsProperty =
-            createProperty(NumCommandsProperty, QVariant::Int, tr("Kodable Command Count"), groupProperty);
-    numCommandsProperty->setAttribute(QLatin1String("minimum"), 1);
-    numCommandsProperty->setAttribute(QLatin1String("maximum"), 8);
-
     addProperty(groupProperty);
 }
 
@@ -373,10 +369,19 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
 }
 
-void PropertyBrowser::addTileLayerProperties()
+void PropertyBrowser::addTileLayerProperties(TileLayer *layer)
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
+
+    if (layer->name() == QLatin1String("Tile Layer 1")) {
+        createProperty(LooperProperty, QVariant::Bool, tr("Kodable Looper"), groupProperty);
+        QtVariantProperty *numCommandsProperty =
+                createProperty(NumCommandsProperty, QVariant::Int, tr("Kodable Command Count"), groupProperty);
+        numCommandsProperty->setAttribute(QLatin1String("minimum"), 1);
+        numCommandsProperty->setAttribute(QLatin1String("maximum"), 8);
+    }
+
     addProperty(groupProperty);
 }
 
@@ -454,21 +459,6 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperties(mMapDocument,
                                           val.value<QColor>(),
                                           map->layerDataFormat());
-        break;
-    case LooperProperty:
-        if (val.toBool()) {
-            command = new SetProperty(mMapDocument, map,
-                                      QLatin1String("Looper"),
-                                      QLatin1String("true"));
-        } else {
-            command = new RemoveProperty(mMapDocument, map,
-                                         QLatin1String("Looper"));
-        }
-        break;
-    case NumCommandsProperty:
-        command = new SetProperty(mMapDocument, map,
-                                  QLatin1String("NumCommands"),
-                                  QString::number(val.toInt()));
         break;
     default:
         break;
@@ -566,8 +556,30 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(val)
+    QUndoCommand *command = 0;
+
+    switch (id) {
+    case LooperProperty:
+        if (val.toBool()) {
+            command = new SetProperty(mMapDocument, mObject,
+                                      QLatin1String("Looper"),
+                                      QLatin1String("true"));
+        } else {
+            command = new RemoveProperty(mMapDocument, mObject,
+                                         QLatin1String("Looper"));
+        }
+        break;
+    case NumCommandsProperty:
+        command = new SetProperty(mMapDocument, mObject,
+                                  QLatin1String("NumCommands"),
+                                  QString::number(val.toInt()));
+        break;
+    default:
+        break;
+    }
+
+    if (command)
+        mMapDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
@@ -708,8 +720,6 @@ void PropertyBrowser::updateProperties()
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;
         mIdToProperty[ColorProperty]->setValue(backgroundColor);
-        mIdToProperty[LooperProperty]->setValue(map->hasProperty(QLatin1String("Looper")));
-        mIdToProperty[NumCommandsProperty]->setValue(map->property(QLatin1String("NumCommands")).toInt());
         break;
     }
     case Object::MapObjectType: {
@@ -740,6 +750,10 @@ void PropertyBrowser::updateProperties()
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
+            if (layer->name() == QLatin1String("Tile Layer 1")) {
+                mIdToProperty[LooperProperty]->setValue(layer->hasProperty(QLatin1String("Looper")));
+                mIdToProperty[NumCommandsProperty]->setValue(layer->property(QLatin1String("NumCommands")).toInt());
+            }
             break;
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);

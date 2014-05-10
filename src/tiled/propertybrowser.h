@@ -120,7 +120,7 @@ private:
     void addMapProperties();
     void addMapObjectProperties();
     void addLayerProperties(QtProperty *parent);
-    void addTileLayerProperties();
+    void addTileLayerProperties(TileLayer *layer);
     void addObjectGroupProperties();
     void addImageLayerProperties();
     void addTilesetProperties();
