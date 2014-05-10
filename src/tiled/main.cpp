@@ -21,6 +21,7 @@
  */
 
 #include "commandlineparser.h"
+#include "documentmanager.h"
 #include "mainwindow.h"
 #include "languagemanager.h"
 #include "preferences.h"
@@ -188,6 +189,10 @@ int main(int argc, char *argv[])
     } else {
         w.openLastFiles();
     }
+
+    // Automatically open the new map dialog when nothing else was opened
+    if (DocumentManager::instance()->documentCount() == 0)
+        w.newMap();
 
     return a.exec();
 }
