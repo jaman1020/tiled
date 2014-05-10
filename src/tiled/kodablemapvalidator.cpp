@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "map.h"
+#include "tilelayer.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -63,14 +64,22 @@ void KodableMapValidator::validateCurrentMap()
         return;
     }
 
-    if (!map->hasProperty(QLatin1String("NumCommands"))) {
-        setError(tr("NumCommands map property is missing"));
+    const int tileLayerIndex = map->indexOfLayer(QLatin1String("Tile Layer 1"), Layer::TileLayerType);
+    if (tileLayerIndex == -1) {
+        setError(tr("No \"Tile Layer 1\" tile layer found."));
         return;
     }
 
-    const int commandCount = map->property(QLatin1String("NumCommands")).toInt();
-    if (commandCount <= 0 || commandCount > 6) {
-        setError(tr("Invalid number of commands. Should be a value from 1 to 6."));
+    const TileLayer *tileLayer = static_cast<TileLayer*>(map->layerAt(tileLayerIndex));
+
+    if (!tileLayer->hasProperty(QLatin1String("NumCommands"))) {
+        setError(tr("NumCommands property on \"Tile Layer 1\" is missing."));
+        return;
+    }
+
+    const int commandCount = tileLayer->property(QLatin1String("NumCommands")).toInt();
+    if (commandCount < 1 || commandCount > 8) {
+        setError(tr("Invalid value for NumCommands property. Should be a value from 1 to 8."));
         return;
     }
 

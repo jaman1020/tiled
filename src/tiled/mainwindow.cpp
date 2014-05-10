@@ -127,6 +127,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
+    , mValidationErrorWidget(new QWidget)
+    , mValidationErrorLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
@@ -198,6 +200,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mMapsDock->setVisible(false);
     mConsoleDock->setVisible(false);
 
+    QHBoxLayout *errorBoxLayout = new QHBoxLayout;
+    QLabel *iconLabel = new QLabel;
+    iconLabel->setPixmap(QPixmap(QLatin1String(":images/16x16/dialog-warning.png")));
+    errorBoxLayout->addWidget(iconLabel);
+    errorBoxLayout->addWidget(mValidationErrorLabel);
+    mValidationErrorWidget->setLayout(errorBoxLayout);
+
+    mValidationErrorWidget->setVisible(false);
+    statusBar()->addPermanentWidget(mValidationErrorWidget);
     statusBar()->addPermanentWidget(mZoomComboBox);
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -472,7 +483,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, SIGNAL(indexChanged(int)),
             mKodableMapValidator, SLOT(validateCurrentMap()));
     connect(mKodableMapValidator, SIGNAL(errorChanged(QString)),
-            statusBar(), SLOT(showMessage(QString)));
+            this, SLOT(setValidationError(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -1247,6 +1258,12 @@ void MainWindow::onAnimationEditorClosed()
 void MainWindow::onCollisionEditorClosed()
 {
     mShowTileCollisionEditor->setChecked(false);
+}
+
+void MainWindow::setValidationError(const QString &text)
+{
+    mValidationErrorLabel->setText(text);
+    mValidationErrorWidget->setVisible(!text.isEmpty());
 }
 
 void MainWindow::openRecentFile()

@@ -174,6 +174,8 @@ public slots:
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
+    void setValidationError(const QString &text);
+
 private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
@@ -230,6 +232,8 @@ private:
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
+    QWidget *mValidationErrorWidget;
+    QLabel *mValidationErrorLabel;
     QSettings mSettings;
     QToolButton *mRandomButton;
     CommandButton *mCommandButton;
