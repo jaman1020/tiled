@@ -363,23 +363,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
-    CreateObjectTool *tileObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateTile, this);
-    CreateObjectTool *rectangleObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateRectangle, this);
-    CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateEllipse, this);
-    CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolygon, this);
-    CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolyline, this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            tileObjectsTool, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileAnimationEditor, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
@@ -399,14 +387,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
-    toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
-    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
