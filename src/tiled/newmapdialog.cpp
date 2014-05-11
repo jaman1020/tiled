@@ -57,11 +57,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 
     mUi->looper->setChecked(s->value(QLatin1String(MAP_LOOPER_KEY), true).toBool());
     mUi->commandCount->setValue(s->value(QLatin1String(MAP_NUMCOMMANDS_KEY), 8).toInt());
-
-    connect(mUi->radioButtonSmallMap, SIGNAL(toggled(bool)),
-            this, SLOT(applyMapType(bool)));
-    connect(mUi->radioButtonBigMap, SIGNAL(toggled(bool)),
-            this, SLOT(applyMapType(bool)));
 }
 
 NewMapDialog::~NewMapDialog()
