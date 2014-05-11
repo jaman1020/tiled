@@ -100,13 +100,8 @@ MapDocument *NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
 
-    TileLayer *metaLayer = new TileLayer(tr("Meta"), 0, 0,
-                                         mapWidth, mapHeight);
     TileLayer *tileLayer1 = new TileLayer(tr("Tile Layer 1"), 0, 0,
                                           mapWidth, mapHeight);
-
-    // Set the Meta layer to invisible by default
-    metaLayer->setVisible(false);
 
     // Set some commonly used properties
     const int commandCount = mUi->commandCount->value();
@@ -116,12 +111,9 @@ MapDocument *NewMapDialog::createMap()
         tileLayer1->setProperty(QLatin1String("Looper"), QLatin1String("true"));
 
     // Add the default tile layers
-    map->addLayer(metaLayer);
     map->addLayer(tileLayer1);
     map->addLayer(new TileLayer(tr("Coins"), 0, 0,
                                 mapWidth, mapHeight));
-    map->addLayer(new ObjectGroup(tr("Objects"), 0, 0,
-                                  mapWidth, mapHeight));
 
     QLatin1String mapSize("Big");
     if (mUi->radioButtonSmallMap->isChecked())
