@@ -116,13 +116,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
-    , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
-    , mTileAnimationEditor(new TileAnimationEditor(this))
-    , mTileCollisionEditor(new TileCollisionEditor(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -182,15 +179,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
-    addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
     addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
 
-    tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    tabifyDockWidget(mObjectsDock, mLayerDock);
+    tabifyDockWidget(mMiniMapDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
 
@@ -368,10 +363,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileAnimationEditor, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileCollisionEditor, SLOT(setTile(Tile*)));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
@@ -400,25 +391,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
-    mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
-    mShowTileAnimationEditor->setCheckable(true);
-    mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
-    mShowTileCollisionEditor->setCheckable(true);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
-
-    connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
-            mTileAnimationEditor, SLOT(setVisible(bool)));
-    connect(mTileAnimationEditor, SIGNAL(closed()), SLOT(onAnimationEditorClosed()));
-
-    connect(mShowTileCollisionEditor, SIGNAL(toggled(bool)),
-            mTileCollisionEditor, SLOT(setVisible(bool)));
-    connect(mTileCollisionEditor, SIGNAL(closed()), SLOT(onCollisionEditorClosed()));
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -469,13 +446,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
-
-    // This needs to happen before deleting the TilesetManager otherwise it may
-    // hold references to tilesets.
-    mTileAnimationEditor->setTile(0);
-    mTileAnimationEditor->writeSettings();
-    mTileCollisionEditor->setTile(0);
-    mTileCollisionEditor->writeSettings();
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1230,16 +1200,6 @@ void MainWindow::autoMappingWarning()
         QMessageBox::warning(this, title, warnings);
 }
 
-void MainWindow::onAnimationEditorClosed()
-{
-    mShowTileAnimationEditor->setChecked(false);
-}
-
-void MainWindow::onCollisionEditorClosed()
-{
-    mShowTileCollisionEditor->setChecked(false);
-}
-
 void MainWindow::setValidationError(const QString &text)
 {
     mValidationErrorLabel->setText(text);
@@ -1534,7 +1494,6 @@ void MainWindow::retranslateUi()
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
-    mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
     mToolManager->retranslateTools();
 }
@@ -1552,12 +1511,9 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
     mActionHandler->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
-    mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
-    mTileAnimationEditor->setMapDocument(mapDocument);
-    mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);
     mQuickStampManager->setMapDocument(mapDocument);

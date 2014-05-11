@@ -171,9 +171,6 @@ public slots:
     void autoMappingError();
     void autoMappingWarning();
 
-    void onAnimationEditorClosed();
-    void onCollisionEditorClosed();
-
     void setValidationError(const QString &text);
 
 private:
@@ -221,13 +218,10 @@ private:
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
     MapsDock *mMapsDock;
-    ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
-    TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
@@ -247,8 +241,6 @@ private:
 
     QMenu *mLayerMenu;
     QAction *mViewsAndToolbarsMenu;
-    QAction *mShowTileAnimationEditor;
-    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 
