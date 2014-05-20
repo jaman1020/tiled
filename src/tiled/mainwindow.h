@@ -219,15 +219,12 @@ private:
     MapsDock *mMapsDock;
     TilesetDock *mTilesetDock;
     MiniMapDock* mMiniMapDock;
-    QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
     QWidget *mValidationErrorWidget;
     QLabel *mValidationErrorLabel;
     QSettings mSettings;
-    QToolButton *mRandomButton;
-    CommandButton *mCommandButton;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;

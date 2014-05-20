@@ -118,7 +118,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mMapsDock(new MapsDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mMiniMapDock(new MiniMapDock(this))
-    , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
@@ -247,16 +246,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->mainToolBar->addSeparator();
 
-    mCommandButton = new CommandButton(this);
-    mUi->mainToolBar->addWidget(mCommandButton);
-
-    mRandomButton = new QToolButton(this);
-    mRandomButton->setToolTip(tr("Random Mode"));
-    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
-    mRandomButton->setCheckable(true);
-    mRandomButton->setShortcut(QKeySequence(tr("D")));
-    mUi->mainToolBar->addWidget(mRandomButton);
-
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
     mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());
@@ -358,11 +347,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
 
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mStampBrush, SLOT(setRandom(bool)));
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mBucketFillTool, SLOT(setRandom(bool)));
-
     QToolBar *toolBar = mUi->toolsToolBar;
     toolBar->addAction(mToolManager->registerTool(mStampBrush));
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
@@ -376,7 +360,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     statusBar()->addWidget(mStatusInfoLabel);
     connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
             this, SLOT(updateStatusInfoLabel(QString)));
-    statusBar()->addWidget(mCurrentLayerLabel);
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -1302,13 +1285,7 @@ void MainWindow::updateActions()
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAutoMap->setEnabled(map);
 
-    mCommandButton->setEnabled(map);
-
     updateZoomLabel(); // for the zoom actions
-
-    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : 0;
-    mCurrentLayerLabel->setText(tr("Current layer: %1").arg(
-                                    layer ? layer->name() : tr("<none>")));
 }
 
 void MainWindow::updateZoomLabel()
@@ -1468,7 +1445,6 @@ void MainWindow::retranslateUi()
 {
     updateWindowTitle();
 
-    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mActionHandler->retranslateUi();
