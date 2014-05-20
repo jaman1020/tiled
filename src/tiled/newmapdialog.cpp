@@ -107,8 +107,6 @@ MapDocument *NewMapDialog::createMap()
 
     // Add the default tile layers
     map->addLayer(tileLayer1);
-    map->addLayer(new TileLayer(tr("Coins"), 0, 0,
-                                mapWidth, mapHeight));
 
     QLatin1String mapSize("Big");
     if (mUi->radioButtonSmallMap->isChecked())
