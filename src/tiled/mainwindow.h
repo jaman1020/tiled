@@ -219,7 +219,6 @@ private:
     MapsDock *mMapsDock;
     TilesetDock *mTilesetDock;
     MiniMapDock* mMiniMapDock;
-    ConsoleDock *mConsoleDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;

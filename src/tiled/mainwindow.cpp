@@ -118,7 +118,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mMapsDock(new MapsDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mMiniMapDock(new MiniMapDock(this))
-    , mConsoleDock(new ConsoleDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -181,7 +180,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
-    addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mLayerDock);
     tabifyDockWidget(undoDock, mMapsDock);
@@ -190,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // they are hidden by default.
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
-    mConsoleDock->setVisible(false);
+    mMiniMapDock->setVisible(false);
 
     QHBoxLayout *errorBoxLayout = new QHBoxLayout;
     QLabel *iconLabel = new QLabel;
