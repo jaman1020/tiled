@@ -117,7 +117,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
     , mTilesetDock(new TilesetDock(this))
-    , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
     , mCurrentLayerLabel(new QLabel)
@@ -180,13 +179,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
     addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mLayerDock);
-    tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
 
     // These dock widgets may not be immediately useful to many people, so
@@ -356,16 +353,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
-    mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
-            this, SLOT(setTerrainBrush(const Terrain*)));
 
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
@@ -374,7 +367,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     QToolBar *toolBar = mUi->toolsToolBar;
     toolBar->addAction(mToolManager->registerTool(mStampBrush));
-    toolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
@@ -1385,19 +1377,6 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
         mToolManager->selectTool(mStampBrush);
 }
 
-/**
- * Sets the terrain brush.
- */
-void MainWindow::setTerrainBrush(const Terrain *terrain)
-{
-    mTerrainBrush->setTerrain(terrain);
-
-    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mTerrainBrush)
-        mToolManager->selectTool(mTerrainBrush);
-}
-
 void MainWindow::saveQuickStamp(int index)
 {
     mQuickStampManager->saveQuickStamp(index, mToolManager->selectedTool());
@@ -1512,7 +1491,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mActionHandler->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);

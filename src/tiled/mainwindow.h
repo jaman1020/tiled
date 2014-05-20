@@ -161,7 +161,6 @@ public slots:
     void rotate(RotateDirection direction);
 
     void setStampBrush(const TileLayer *tiles);
-    void setTerrainBrush(const Terrain *terrain);
     void saveQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
@@ -219,7 +218,6 @@ private:
     LayerDock *mLayerDock;
     MapsDock *mMapsDock;
     TilesetDock *mTilesetDock;
-    TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
     QLabel *mCurrentLayerLabel;
@@ -234,7 +232,6 @@ private:
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
-    TerrainBrush *mTerrainBrush;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
