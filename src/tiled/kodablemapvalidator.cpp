@@ -35,7 +35,7 @@ KodableMapValidator::KodableMapValidator(QObject *parent) :
 static bool isSmallMap(const Map *map)
 {
     return map->width() == 15 &&
-            map->height() == 12 &&
+            map->height() == 8 &&
             map->tileWidth() == 138 &&
             map->tileHeight() == 138;
 }
@@ -43,7 +43,7 @@ static bool isSmallMap(const Map *map)
 static bool isBigMap(const Map *map)
 {
     return map->width() == 30 &&
-            map->height() == 24 &&
+            map->height() == 14 &&
             map->tileWidth() == 69 &&
             map->tileHeight() == 69;
 }

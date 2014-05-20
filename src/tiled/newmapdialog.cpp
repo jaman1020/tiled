@@ -76,12 +76,12 @@ MapDocument *NewMapDialog::createMap()
 
     if (mUi->radioButtonBigMap->isChecked()) {
         mapWidth = 30;
-        mapHeight = 24;
+        mapHeight = 14;
         tileWidth = 69;
         tileHeight = 69;
     } else {
         mapWidth = 15;
-        mapHeight = 12;
+        mapHeight = 8;
         tileWidth = 138;
         tileHeight = 138;
     }
