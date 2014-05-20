@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "tile.h"
 #include "tilelayer.h"
 
 #include <cmath>
@@ -107,8 +108,17 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        setStatusInfo(QString(QLatin1String("%1, %2"))
-                      .arg(mTileX).arg(mTileY));
+        Tile *tile = 0;
+
+        if (const TileLayer *tileLayer = currentTileLayer()) {
+            const QPoint pos = tilePosition() - tileLayer->position();
+            if (tileLayer->contains(pos))
+                tile = tileLayer->cellAt(pos).tile;
+        }
+
+        QString tileIdString = tile ? QString::number(tile->id()) : tr("empty");
+        setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
+                      .arg(mTileX).arg(mTileY).arg(tileIdString));
     } else {
         setStatusInfo(QString());
     }

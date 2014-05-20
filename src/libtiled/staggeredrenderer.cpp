@@ -1,6 +1,6 @@
 /*
  * staggeredrenderer.cpp
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -68,20 +68,6 @@ QRect StaggeredRenderer::boundingRect(const QRect &rect) const
     return QRect(topLeft.x(), topLeft.y(), width, height);
 }
 
-QRectF StaggeredRenderer::boundingRect(const MapObject *object) const
-{
-    // TODO
-    return boundingRect(object->bounds().toAlignedRect());
-}
-
-QPainterPath StaggeredRenderer::shape(const MapObject *object) const
-{
-    // TODO
-    QPainterPath result;
-    result.addRect(boundingRect(object));
-    return result;
-}
-
 void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
                                  QColor gridColor) const
 {
@@ -125,8 +111,6 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
             painter->drawPolyline(line);
         }
     }
-
-
 }
 
 void StaggeredRenderer::drawTileLayer(QPainter *painter,
@@ -137,10 +121,12 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
     const int tileHeight = map()->tileHeight();
 
     QRect rect = exposed.toAlignedRect();
+
     if (rect.isNull())
         rect = boundingRect(layer->bounds());
 
     QMargins drawMargins = layer->drawMargins();
+    drawMargins.setBottom(drawMargins.bottom() + tileHeight);
     drawMargins.setRight(drawMargins.right() - tileWidth);
 
     rect.adjust(-drawMargins.right(),
@@ -190,6 +176,7 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
 
         for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
             const Cell &cell = layer->cellAt(rowTile);
+
             if (!cell.isEmpty())
                 renderer.render(cell, rowPos, CellRenderer::BottomLeft);
 
@@ -219,30 +206,14 @@ void StaggeredRenderer::drawTileSelection(QPainter *painter,
     }
 }
 
-void StaggeredRenderer::drawMapObject(QPainter *painter,
-                                      const MapObject *object,
-                                      const QColor &color) const
-{
-    Q_UNUSED(painter)
-    Q_UNUSED(object)
-    Q_UNUSED(color)
-    // TODO
-}
-
 QPointF StaggeredRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-
-    return QPointF(x * tileWidth, y * tileHeight);
+    return StaggeredRenderer::tileToScreenCoords(x, y);
 }
 
 QPointF StaggeredRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-    
-    return QPointF(x / tileWidth, y / tileHeight);
+    return StaggeredRenderer::screenToTileCoords(x, y);
 }
 
 /**
@@ -291,24 +262,6 @@ QPointF StaggeredRenderer::tileToScreenCoords(qreal x, qreal y) const
     int pixelY = int(y) * (tileHeight / 2);
 
     return QPointF(pixelX, pixelY);
-}
-
-QPointF StaggeredRenderer::screenToPixelCoords(qreal x, qreal y) const
-{
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-    const QPointF tileCoords = screenToTileCoords(x, y);
-
-    return QPointF(tileCoords.x() * tileWidth,
-                   tileCoords.y() * tileHeight);
-}
-
-QPointF StaggeredRenderer::pixelToScreenCoords(qreal x, qreal y) const
-{
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
-    
-    return tileToScreenCoords(x / tileWidth, y / tileHeight);
 }
 
 QPoint StaggeredRenderer::topLeft(int x, int y) const

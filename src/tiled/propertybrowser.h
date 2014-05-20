@@ -22,6 +22,7 @@
 #define PROPERTYBROWSER_H
 
 #include <QHash>
+#include <QUndoCommand>
 
 #include <QtTreePropertyBrowser>
 
@@ -129,6 +130,7 @@ private:
 
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);
+    QUndoCommand *applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject);
     void applyLayerValue(PropertyId id, const QVariant &val);
     void applyTileLayerValue(PropertyId id, const QVariant &val);
     void applyObjectGroupValue(PropertyId id, const QVariant &val);
