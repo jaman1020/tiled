@@ -93,8 +93,6 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionShowGrid"/>
-    <addaction name="actionShowTileAnimations"/>
-    <addaction name="separator"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>

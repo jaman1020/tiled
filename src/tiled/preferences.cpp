@@ -67,7 +67,7 @@ Preferences::Preferences()
     mSettings->beginGroup(QLatin1String("Interface"));
     mShowGrid = boolValue("ShowGrid", true);
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
-    mShowTileAnimations = boolValue("ShowTileAnimations", true);
+    mShowTileAnimations = boolValue("ShowTileAnimations", false);
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mGridColor = colorValue("GridColor", Qt::black);
