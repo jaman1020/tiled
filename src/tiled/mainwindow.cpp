@@ -29,7 +29,6 @@
 
 #include "aboutdialog.h"
 #include "addremovemapobject.h"
-#include "automappingmanager.h"
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
@@ -42,7 +41,6 @@
 #include "kodablemapvalidator.h"
 #include "languagemanager.h"
 #include "layer.h"
-#include "layerdock.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -55,7 +53,6 @@
 #include "newtilesetdialog.h"
 #include "pluginmanager.h"
 #include "resizedialog.h"
-#include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
 #include "preferences.h"
@@ -64,13 +61,11 @@
 #include "quickstampmanager.h"
 #include "saveasimagedialog.h"
 #include "stampbrush.h"
-#include "terrainbrush.h"
 #include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
-#include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
@@ -78,11 +73,7 @@
 #include "utils.h"
 #include "zoomable.h"
 #include "commandbutton.h"
-#include "objectsdock.h"
 #include "minimapdock.h"
-#include "consoledock.h"
-#include "tileanimationeditor.h"
-#include "tilecollisioneditor.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -114,7 +105,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mMapDocument(0)
     , mActionHandler(new MapDocumentActionHandler(this))
-    , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mMiniMapDock(new MiniMapDock(this))
@@ -123,7 +113,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mStatusInfoLabel(new QLabel)
     , mValidationErrorWidget(new QWidget)
     , mValidationErrorLabel(new QLabel)
-    , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
     , mToolManager(new ToolManager(this))
@@ -173,14 +162,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     UndoDock *undoDock = new UndoDock(undoGroup, this);
     PropertiesDock *propertiesDock = new PropertiesDock(this);
 
-    addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
 
-    tabifyDockWidget(mMiniMapDock, mLayerDock);
     tabifyDockWidget(undoDock, mMapsDock);
 
     // These dock widgets may not be immediately useful to many people, so
@@ -292,8 +279,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
-    connect(mUi->actionAutoMap, SIGNAL(triggered()),
-            mAutomappingManager, SLOT(autoMap()));
 
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -399,11 +384,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     updateActions();
     readSettings();
     setupQuickStamps();
-
-    connect(mAutomappingManager, SIGNAL(warningsOccurred()),
-            this, SLOT(autoMappingWarning()));
-    connect(mAutomappingManager, SIGNAL(errorsOccurred()),
-            this, SLOT(autoMappingError()));
 
     connect(undoGroup, SIGNAL(indexChanged(int)),
             mKodableMapValidator, SLOT(validateCurrentMap()));
@@ -1152,22 +1132,6 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void MainWindow::autoMappingError()
-{
-    const QString title = tr("Automatic Mapping Error");
-    QString error = mAutomappingManager->errorString();
-    if (!error.isEmpty())
-        QMessageBox::critical(this, title, error);
-}
-
-void MainWindow::autoMappingWarning()
-{
-    const QString title = tr("Automatic Mapping Warning");
-    QString warnings = mAutomappingManager->warningString();
-    if (!warnings.isEmpty())
-        QMessageBox::warning(this, title, warnings);
-}
-
 void MainWindow::setValidationError(const QString &text)
 {
     mValidationErrorLabel->setText(text);
@@ -1458,11 +1422,9 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     mActionHandler->setMapDocument(mapDocument);
-    mLayerDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
-    mAutomappingManager->setMapDocument(mapDocument);
     mQuickStampManager->setMapDocument(mapDocument);
 
     if (mapDocument) {

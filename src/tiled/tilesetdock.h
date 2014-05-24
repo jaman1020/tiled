@@ -147,14 +147,6 @@ private:
     TileLayer *mCurrentTiles;
     const Terrain *mTerrain;
 
-    QAction *mImportTileset;
-    QAction *mExportTileset;
-    QAction *mPropertiesTileset;
-    QAction *mDeleteTileset;
-    QAction *mEditTerrain;
-    QAction *mAddTiles;
-    QAction *mRemoveTiles;
-
     QMap<MapDocument *, QString> mCurrentTilesets;
 
     QToolButton *mTilesetMenuButton;

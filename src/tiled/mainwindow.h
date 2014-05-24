@@ -49,7 +49,6 @@ class MapReaderInterface;
 
 namespace Internal {
 
-class AutomappingManager;
 class BucketFillTool;
 class CommandButton;
 class DocumentManager;
@@ -59,14 +58,11 @@ class MapScene;
 class MapsDock;
 class MapView;
 class MiniMapDock;
-class ObjectsDock;
 class PropertiesDock;
 class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
-class TileAnimationEditor;
-class TileCollisionEditor;
 class TilesetDock;
 class ToolManager;
 class Zoomable;
@@ -167,9 +163,6 @@ public slots:
     void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
-    void autoMappingError();
-    void autoMappingWarning();
-
     void setValidationError(const QString &text);
 
 private:
@@ -215,7 +208,6 @@ private:
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
-    LayerDock *mLayerDock;
     MapsDock *mMapsDock;
     TilesetDock *mTilesetDock;
     MiniMapDock* mMiniMapDock;
@@ -237,7 +229,6 @@ private:
 
     void setupQuickStamps();
 
-    AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;

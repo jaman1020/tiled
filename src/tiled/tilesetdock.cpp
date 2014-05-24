@@ -224,13 +224,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
-    mImportTileset(new QAction(this)),
-    mExportTileset(new QAction(this)),
-    mPropertiesTileset(new QAction(this)),
-    mDeleteTileset(new QAction(this)),
-    mEditTerrain(new QAction(this)),
-    mAddTiles(new QAction(this)),
-    mRemoveTiles(new QAction(this)),
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
     mTilesetActionGroup(new QActionGroup(this)),
@@ -264,44 +257,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
-    mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
-    mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
-    mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
-    mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mEditTerrain->setIcon(QIcon(QLatin1String(":images/16x16/terrain.png")));
-    mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
-    mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
-
-    Utils::setThemeIcon(mImportTileset, "document-import");
-    Utils::setThemeIcon(mExportTileset, "document-export");
-    Utils::setThemeIcon(mPropertiesTileset, "document-properties");
-    Utils::setThemeIcon(mDeleteTileset, "edit-delete");
-    Utils::setThemeIcon(mAddTiles, "add");
-    Utils::setThemeIcon(mRemoveTiles, "remove");
-
-    connect(mImportTileset, SIGNAL(triggered()),
-            SLOT(importTileset()));
-    connect(mExportTileset, SIGNAL(triggered()),
-            SLOT(exportTileset()));
-    connect(mPropertiesTileset, SIGNAL(triggered()),
-            SLOT(editTilesetProperties()));
-    connect(mDeleteTileset, SIGNAL(triggered()),
-            SLOT(removeTileset()));
-    connect(mEditTerrain, SIGNAL(triggered()),
-            SLOT(editTerrain()));
-    connect(mAddTiles, SIGNAL(triggered()),
-            SLOT(addTiles()));
-    connect(mRemoveTiles, SIGNAL(triggered()),
-            SLOT(removeTiles()));
-
     mToolBar->setIconSize(QSize(16, 16));
-    mToolBar->addAction(mImportTileset);
-    mToolBar->addAction(mExportTileset);
-    mToolBar->addAction(mPropertiesTileset);
-    mToolBar->addAction(mDeleteTileset);
-    mToolBar->addAction(mEditTerrain);
-    mToolBar->addAction(mAddTiles);
-    mToolBar->addAction(mRemoveTiles);
 
     mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
@@ -445,9 +401,6 @@ void TilesetDock::selectionChanged()
 
 void TilesetDock::updateActions()
 {
-    bool external = false;
-    bool hasImageSource = false;
-    bool hasSelection = false;
     TilesetView *view = 0;
     const int index = mTabBar->currentIndex();
 
@@ -470,19 +423,8 @@ void TilesetDock::updateActions()
             }
 
             mViewStack->setCurrentIndex(index);
-            external = tileset->isExternal();
-            hasImageSource = !tileset->imageSource().isEmpty();
-            hasSelection = view->selectionModel()->hasSelection();
         }
     }
-
-    mImportTileset->setEnabled(view && external);
-    mExportTileset->setEnabled(view && !external);
-    mPropertiesTileset->setEnabled(view && !external);
-    mDeleteTileset->setEnabled(view);
-    mEditTerrain->setEnabled(view && !external);
-    mAddTiles->setEnabled(view && !hasImageSource && !external);
-    mRemoveTiles->setEnabled(view && !hasImageSource && hasSelection && !external);
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -702,13 +644,6 @@ void TilesetDock::setCurrentTile(Tile *tile)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
-    mImportTileset->setText(tr("&Import Tileset"));
-    mExportTileset->setText(tr("&Export Tileset As..."));
-    mPropertiesTileset->setText(tr("Tile&set Properties"));
-    mDeleteTileset->setText(tr("&Remove Tileset"));
-    mEditTerrain->setText(tr("Edit &Terrain Information"));
-    mAddTiles->setText(tr("Add Tiles"));
-    mRemoveTiles->setText(tr("Remove Tiles"));
 }
 
 Tileset *TilesetDock::currentTileset() const
