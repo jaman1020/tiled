@@ -247,11 +247,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->mainToolBar->addSeparator();
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
-    mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());
-    mLayerMenu->addSeparator();
-    mLayerMenu->addAction(mActionHandler->actionToggleOtherLayers());
-    mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
