@@ -31,7 +31,6 @@ Dir.mktmpdir do |tempDir|
     ['LICENSE.GPL', 'LICENSE.BSD', 'AUTHORS', 'COPYING', 'NEWS', 'README.md'].each do |file|
         FileUtils.cp File.join(baseDir, file), tempDir
     end
-    FileUtils.cp_r File.join(baseDir, 'examples'), tempDir
     FileUtils.cp_r binAppDir, tempDir
     FileUtils.ln_s '/Applications', File.join(tempDir, 'Applications') #Symlink to Applications for easy install
     FileUtils.cp File.join(baseDir, 'src/tiled/images/tmx-icon-mac.icns'), File.join(tempDir, 'Tiled.app/Contents/Resources')

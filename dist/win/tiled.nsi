@@ -217,9 +217,6 @@ File  ${QT_DIR}\translations\qt_ru.qm
 File  ${QT_DIR}\translations\qt_zh_CN.qm
 File  ${QT_DIR}\translations\qt_zh_TW.qm
 
-SetOutPath $INSTDIR\examples
-File /r ${ROOT_DIR}\examples\*.*
-
 SetOutPath $INSTDIR\docs
 File /r ${ROOT_DIR}\docs\map.*
 
@@ -278,7 +275,6 @@ RMDir /r $INSTDIR\plugins\imageformats
 RMDir /r $INSTDIR\plugins\tiled
 RMDir    $INSTDIR\plugins
 RMDir /r $INSTDIR\translations
-RMDir /r $INSTDIR\examples
 RMDir /r $INSTDIR\docs
 RMDir /r $INSTDIR\util
 
