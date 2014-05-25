@@ -42,6 +42,10 @@ void FileSystemWatcher::addPath(const QString &path)
     if (!QFile::exists(path))
         return;
 
+    // Ignore files that appear to be in resource files
+    if (path.startsWith(QLatin1Char(':')))
+        return;
+
     QMap<QString, int>::iterator entry = mWatchCount.find(path);
     if (entry == mWatchCount.end()) {
         mWatcher->addPath(path);
@@ -56,7 +60,7 @@ void FileSystemWatcher::removePath(const QString &path)
 {
     QMap<QString, int>::iterator entry = mWatchCount.find(path);
     if (entry == mWatchCount.end()) {
-        if (QFile::exists(path))
+        if (QFile::exists(path) && !path.startsWith(QLatin1Char(':')))
             qWarning() << "FileSystemWatcher: Path was never added:" << path;
         return;
     }

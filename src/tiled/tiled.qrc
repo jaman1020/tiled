@@ -78,5 +78,9 @@
         <file>images/24x24/terrain-edit.png</file>
         <file>images/32x32/tiled.png</file>
         <file>images/16x16/dialog-warning.png</file>
+        <file>tilesets/2xKidsTiled.png</file>
+        <file>tilesets/2xKidsTiled.tsx</file>
+        <file>tilesets/KidsTiled.png</file>
+        <file>tilesets/KidsTiled.tsx</file>
     </qresource>
 </RCC>

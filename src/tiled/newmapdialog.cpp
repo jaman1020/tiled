@@ -24,6 +24,7 @@
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "preferences.h"
@@ -69,12 +70,14 @@ MapDocument *NewMapDialog::createMap()
     if (exec() != QDialog::Accepted)
         return 0;
 
+    const bool isBigMap = mUi->radioButtonBigMap->isChecked();
+
     int mapWidth;
     int mapHeight;
     int tileWidth;
     int tileHeight;
 
-    if (mUi->radioButtonBigMap->isChecked()) {
+    if (isBigMap) {
         mapWidth = 30;
         mapHeight = 14;
         tileWidth = 69;
@@ -107,6 +110,22 @@ MapDocument *NewMapDialog::createMap()
 
     // Add the default tile layers
     map->addLayer(tileLayer1);
+
+    // Add the tileset
+    MapReader reader;
+    Tileset *tileset;
+
+    if (isBigMap)
+        tileset = reader.readTileset(QLatin1String(":/tilesets/2xKidsTiled.tsx"));
+    else
+        tileset = reader.readTileset(QLatin1String(":/tilesets/KidsTiled.tsx"));
+
+    if (!tileset) {
+        delete map;
+        return 0;
+    }
+
+    map->addTileset(tileset);
 
     QLatin1String mapSize("Big");
     if (mUi->radioButtonSmallMap->isChecked())

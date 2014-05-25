@@ -49,6 +49,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static QString relativeFilePath(const QDir &dir,
+                                const QString &fileName)
+{
+    // Likely a reference to a resource file
+    if (fileName.startsWith(QLatin1Char(':')))
+        return fileName;
+
+    return dir.relativeFilePath(fileName);
+}
+
 namespace Tiled {
 namespace Internal {
 
@@ -224,7 +234,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     if (!fileName.isEmpty()) {
         QString source = fileName;
         if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
+            source = relativeFilePath(mMapDir, source);
         w.writeAttribute(QLatin1String("source"), source);
 
         // Tileset is external, so no need to write any of the stuff below
@@ -262,7 +272,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         w.writeStartElement(QLatin1String("image"));
         QString source = imageSource;
         if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
+            source = relativeFilePath(mMapDir, source);
         w.writeAttribute(QLatin1String("source"), source);
 
         const QColor transColor = tileset->transparentColor();
@@ -339,7 +349,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                 } else {
                     QString source = tile->imageSource();
                     if (!mUseAbsolutePaths)
-                        source = mMapDir.relativeFilePath(source);
+                        source = relativeFilePath(mMapDir, source);
                     w.writeAttribute(QLatin1String("source"), source);
                 }
 
@@ -572,7 +582,7 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("image"));
         QString source = imageSource;
         if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
+            source = relativeFilePath(mMapDir, source);
         w.writeAttribute(QLatin1String("source"), source);
 
         const QColor transColor = imageLayer->transparentColor();
