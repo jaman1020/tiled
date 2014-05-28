@@ -1,4 +1,10 @@
-Tiled Map Editor - http://www.mapeditor.org/
+Kodable Level Editor - http://www.kodable.com/
+
+About Kodable Level Editor
+-------------------------------------------------------------------------------
+
+The Kodable Level Editor provides the ability to create your own Kodable
+levels. It is a customized version of the open source map editor Tiled.
 
 About Tiled
 -------------------------------------------------------------------------------
