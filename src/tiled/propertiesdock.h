@@ -63,8 +63,6 @@ private:
 
     MapDocument *mMapDocument;
     PropertyBrowser *mPropertyBrowser;
-    QAction *mActionAddProperty;
-    QAction *mActionRemoveProperty;
 };
 
 } // namespace Internal

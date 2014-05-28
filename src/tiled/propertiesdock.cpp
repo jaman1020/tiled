@@ -48,34 +48,11 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 {
     setObjectName(QLatin1String("propertiesDock"));
 
-    mActionAddProperty = new QAction(this);
-    mActionAddProperty->setEnabled(false);
-    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    connect(mActionAddProperty, SIGNAL(triggered()),
-            SLOT(addProperty()));
-
-    mActionRemoveProperty = new QAction(this);
-    mActionRemoveProperty->setEnabled(false);
-    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
-    connect(mActionRemoveProperty, SIGNAL(triggered()),
-            SLOT(removeProperty()));
-
-    Utils::setThemeIcon(mActionAddProperty, "add");
-    Utils::setThemeIcon(mActionRemoveProperty, "remove");
-
-    QToolBar *toolBar = new QToolBar;
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(16, 16));
-    toolBar->addAction(mActionAddProperty);
-    toolBar->addAction(mActionRemoveProperty);
-
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(5);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
-    layout->addWidget(toolBar);
     widget->setLayout(layout);
 
     setWidget(widget);
@@ -142,14 +119,11 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
     const bool enabled = object != 0 && !isExternal(object);
     mPropertyBrowser->setEnabled(enabled);
-    mActionAddProperty->setEnabled(enabled);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
-    bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    bool external = isExternal(mPropertyBrowser->object());
-    mActionRemoveProperty->setEnabled(isCustomProperty && !external);
+    Q_UNUSED(item)
 }
 
 void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
@@ -245,9 +219,6 @@ bool PropertiesDock::event(QEvent *event)
 void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
-
-    mActionAddProperty->setText(tr("Add Property"));
-    mActionRemoveProperty->setText(tr("Remove Property"));
 }
 
 } // namespace Internal
