@@ -75,6 +75,7 @@ MapView::MapView(QWidget *parent, Mode mode)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
+    mZoomable->setScale(0.33);
 }
 
 MapView::~MapView()

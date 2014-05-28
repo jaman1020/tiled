@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
+#include <QStackedWidget>
 
 class QAction;
 class QActionGroup;
@@ -50,6 +51,15 @@ namespace Internal {
 class MapDocument;
 class TilesetView;
 class Zoomable;
+
+class ViewStack : public QStackedWidget
+{
+    Q_OBJECT
+
+    // QWidget interface
+public:
+    QSize sizeHint() const { return QSize(300, 300); }
+};
 
 /**
  * The dock widget that displays the tilesets. Also keeps track of the

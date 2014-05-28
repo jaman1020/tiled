@@ -56,7 +56,6 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSignalMapper>
-#include <QStackedWidget>
 #include <QStylePainter>
 #include <QToolBar>
 #include <QToolButton>
@@ -220,7 +219,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(0),
     mTabBar(new QTabBar),
-    mViewStack(new QStackedWidget),
+    mViewStack(new ViewStack),
     mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
@@ -260,6 +259,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->setIconSize(QSize(16, 16));
 
     mZoomable = new Zoomable(this);
+    mZoomable->setScale(0.33);
+
     mZoomComboBox = new QComboBox;
     mZoomable->connectToComboBox(mZoomComboBox);
     horizontal->addWidget(mZoomComboBox);
