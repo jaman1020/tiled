@@ -82,5 +82,6 @@
         <file>tilesets/2xKidsTiled.tsx</file>
         <file>tilesets/KidsTiled.png</file>
         <file>tilesets/KidsTiled.tsx</file>
+        <file>images/kodable-logo.png</file>
     </qresource>
 </RCC>
