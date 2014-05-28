@@ -250,25 +250,41 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
     mUpdating = true;
     QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
     property->setValue(object->property(name));
+    property->setEnabled(false);
     mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
     mPropertyToId.insert(property, CustomProperty);
     mNameToProperty.insert(name, property);
     mUpdating = false;
+
+    if (TileLayer *layer = dynamic_cast<TileLayer*>(mObject))
+        if (layer->name() == QLatin1String("Tile Layer 1"))
+            updateProperties();
 }
 
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 {
-    if (mObject == object)
-        delete mNameToProperty.take(name);
+    if (mObject != object)
+        return;
+
+    delete mNameToProperty.take(name);
+
+    if (TileLayer *layer = dynamic_cast<TileLayer*>(mObject))
+        if (layer->name() == QLatin1String("Tile Layer 1"))
+            updateProperties();
 }
 
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
-    if (mObject == object) {
-        mUpdating = true;
-        mNameToProperty[name]->setValue(object->property(name));
-        mUpdating = false;
-    }
+    if (mObject != object)
+        return;
+
+    mUpdating = true;
+    mNameToProperty[name]->setValue(object->property(name));
+    mUpdating = false;
+
+    if (TileLayer *layer = dynamic_cast<TileLayer*>(mObject))
+        if (layer->name() == QLatin1String("Tile Layer 1"))
+            updateProperties();
 }
 
 void PropertyBrowser::propertiesChanged(Object *object)
@@ -375,9 +391,9 @@ void PropertyBrowser::addTileLayerProperties(TileLayer *layer)
     addLayerProperties(groupProperty);
 
     if (layer->name() == QLatin1String("Tile Layer 1")) {
-        createProperty(LooperProperty, QVariant::Bool, tr("Kodable Looper"), groupProperty);
+        createProperty(LooperProperty, QVariant::Bool, tr("Enable looper"), groupProperty);
         QtVariantProperty *numCommandsProperty =
-                createProperty(NumCommandsProperty, QVariant::Int, tr("Kodable Command Count"), groupProperty);
+                createProperty(NumCommandsProperty, QVariant::Int, tr("Number of commands"), groupProperty);
         numCommandsProperty->setAttribute(QLatin1String("minimum"), 1);
         numCommandsProperty->setAttribute(QLatin1String("maximum"), 8);
     }
@@ -584,7 +600,7 @@ void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
             command = new SetProperty(mMapDocument,
                                       QList<Object*>() << mObject,
                                       QLatin1String("Looper"),
-                                      QLatin1String("true"));
+                                      QString());
         } else {
             command = new RemoveProperty(mMapDocument,
                                          QList<Object*>() << mObject,
@@ -832,7 +848,12 @@ void PropertyBrowser::updateCustomProperties()
                                                      it.key(),
                                                      mCustomPropertiesGroup);
         property->setValue(it.value());
+        property->setEnabled(false);
     }
+
+    if (TileLayer *layer = dynamic_cast<TileLayer*>(mObject))
+        if (layer->name() == QLatin1String("Tile Layer 1"))
+            updateProperties();
 
     mUpdating = false;
 }
