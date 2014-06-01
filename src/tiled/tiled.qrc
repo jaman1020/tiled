@@ -83,5 +83,7 @@
         <file>tilesets/KidsTiled.png</file>
         <file>tilesets/KidsTiled.tsx</file>
         <file>images/kodable-logo.png</file>
+        <file>images/grass_bg.png</file>
+        <file>images/kodable-editor-icon.png</file>
     </qresource>
 </RCC>

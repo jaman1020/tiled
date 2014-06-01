@@ -56,6 +56,7 @@ static const qreal opacityFactor = 0.4;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
+    mBackgroundImage(QLatin1String(":/images/grass_bg.png")),
     mMapDocument(0),
     mSelectedTool(0),
     mActiveTool(0),
@@ -591,6 +592,12 @@ void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
 
     mHighlightCurrentLayer = highlightCurrentLayer;
     updateCurrentLayerHighlight();
+}
+
+void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsScene::drawBackground(painter, rect);
+    painter->drawImage(0, 0, mBackgroundImage);
 }
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)

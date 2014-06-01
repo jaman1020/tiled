@@ -26,6 +26,7 @@
 
 #include <QColor>
 #include <QGraphicsScene>
+#include <QImage>
 #include <QMap>
 #include <QSet>
 
@@ -113,6 +114,11 @@ signals:
 
 protected:
     /**
+     * QGraphicsScene::drawBackground override that draws the background image.
+     */
+    void drawBackground(QPainter *painter, const QRectF &rect);
+
+    /**
      * QGraphicsScene::drawForeground override that draws the tile grid.
      */
     void drawForeground(QPainter *painter, const QRectF &rect);
@@ -178,6 +184,7 @@ private:
 
     bool eventFilter(QObject *object, QEvent *event);
 
+    QImage mBackgroundImage;
     MapDocument *mMapDocument;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
