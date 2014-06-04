@@ -44,7 +44,7 @@ QMAKE_EXTRA_TARGETS += ts
 win32 {
     TARGET_DIR = .
 } else:macx {
-    TARGET_DIR = ../bin/Tiled.app/Contents/Translations
+    TARGET_DIR = "../bin/Kodable Editor.app/Contents/Translations"
 } else {
     TARGET_DIR = ../share/tiled/translations
 }

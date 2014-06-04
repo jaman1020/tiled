@@ -18,7 +18,7 @@ win32 {
 }
 
 macx {
-    QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR += "$$OUT_PWD/../../bin/Kodable Editor.app/Contents/Frameworks"
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {

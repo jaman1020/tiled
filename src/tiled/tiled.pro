@@ -21,7 +21,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
 macx {
-    QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR += "$$OUT_PWD/../../bin/Kodable Editor.app/Contents/Frameworks"
     LIBS += -framework Foundation
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
@@ -338,9 +338,11 @@ INSTALLS += manpage
 
 RESOURCES += tiled.qrc
 macx {
-    TARGET = KodableEditor
+    TARGET = "Kodable Editor"
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/kodable-editor-icon.icns
+
+    OTHER_FILES = $$QMAKE_INFO_PLIST
 }
 win32 {
     RC_FILE = tiled.rc

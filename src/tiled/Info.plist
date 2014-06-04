@@ -5,13 +5,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>KodableEditor</string>
+        <string>Kodable Editor</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Kodable Level Editor 1.0, Copyright 2008-2014 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
 	<string>kodable-editor-icon</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.mapeditor.Tiled</string>
+        <string>org.mapeditor.KodableEditor</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

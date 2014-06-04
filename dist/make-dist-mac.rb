@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-# This script generates a mac release from an already compiled Tiled.app in
+# This script generates a mac release from an already compiled Kodable Editor.app in
 # the bin folder. You should compile the release before running this:
 # tiled$ qmake -r -spec macx-g++ CONFIG+=release CONFIG+=x86_64
 # tiled$ make
@@ -11,7 +11,7 @@ require 'tmpdir'
 # Get various directories
 baseDir = File.join File.dirname(__FILE__), '..'
 binDir = File.join baseDir, 'bin'
-binAppDir = File.join binDir, 'Tiled.app'
+binAppDir = File.join binDir, 'Kodable Editor.app'
 raise "No application at #{binAppDir}" unless File.directory? binAppDir
 
 # Get the version from the info plist
@@ -33,15 +33,15 @@ Dir.mktmpdir do |tempDir|
     end
     FileUtils.cp_r binAppDir, tempDir
     FileUtils.ln_s '/Applications', File.join(tempDir, 'Applications') #Symlink to Applications for easy install
-    FileUtils.cp File.join(baseDir, 'src/tiled/images/tmx-icon-mac.icns'), File.join(tempDir, 'Tiled.app/Contents/Resources')
+    FileUtils.cp File.join(baseDir, 'src/tiled/images/tmx-icon-mac.icns'), File.join(tempDir, 'Kodable Editor.app/Contents/Resources')
 
     # Use macdeployqt to copy Qt frameworks to the app
     puts "Running macdeployqt"
-    `macdeployqt "#{tempDir}/Tiled.app"`
+    `macdeployqt "#{tempDir}/Kodable Editor.app"`
     raise "macdeployqt error #{$?}" unless $? == 0
 
     # Modify plugins to use Qt frameworks contained within the app bundle (is there some way to get macdeployqt to do this?)
-    Dir["#{File.join tempDir, 'Tiled.app'}/**/*.dylib"].each do |library|
+    Dir["#{File.join tempDir, 'Kodable Editor.app'}/**/*.dylib"].each do |library|
         ["QtCore", "QtGui"].each do |qtlib|
             #find any qt dependencies within this library
             qtdependency = `otool -L "#{library}" | grep #{qtlib}`.split(' ')[0]
