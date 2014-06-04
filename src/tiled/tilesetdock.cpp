@@ -259,7 +259,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->setIconSize(QSize(16, 16));
 
     mZoomable = new Zoomable(this);
-    mZoomable->setScale(0.33);
+    mZoomable->setScale(0.5);
 
     mZoomComboBox = new QComboBox;
     mZoomable->connectToComboBox(mZoomComboBox);
