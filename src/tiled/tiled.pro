@@ -3,7 +3,7 @@ include(../libtiled/libtiled.pri)
 include(../qtpropertybrowser/src/qtpropertybrowser.pri)
 
 TEMPLATE = app
-TARGET = tiled
+TARGET = kodable-editor
 target.path = $${PREFIX}/bin
 INSTALLS += target
 win32 {
@@ -338,9 +338,9 @@ INSTALLS += manpage
 
 RESOURCES += tiled.qrc
 macx {
-    TARGET = Tiled
+    TARGET = KodableEditor
     QMAKE_INFO_PLIST = Info.plist
-    ICON = images/tiled-icon-mac.icns
+    ICON = images/kodable-editor-icon.icns
 }
 win32 {
     RC_FILE = tiled.rc

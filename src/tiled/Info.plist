@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Tiled</string>
+	<string>KodableEditor</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Kodable Level Editor 1.0, Copyright 2008-2014 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
-	<string>tiled-icon-mac</string>
+	<string>kodable-editor-icon</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.mapeditor.Tiled</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -26,20 +26,5 @@
 	<string>Copyright 2008-2014 Thorbjørn Lindeijer</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Tiled Map</string>
-			<key>CFBundleTypeIconFile</key>
-			<string>tmx-icon-mac</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>tmx</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

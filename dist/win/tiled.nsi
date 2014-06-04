@@ -1,4 +1,4 @@
-; NSIS installer script for Tiled
+; NSIS installer script for Kodable Editor
 ; --------------- Headers --------------
 !include "MUI2.nsh"
 !include "FileAssociation.nsh"
@@ -13,13 +13,13 @@ SetCompressor /FINAL /SOLID lzma
 !define V $%VERSION%                          ; Program version
 !define ARCH $%ARCH%                          ; Architecture 32 or 64
 
-!define P "Tiled"                             ; Program name
-!define P_NORM "tiled"                        ; Program name (normalized)
+!define P "Kodable Editor"                    ; Program name
+!define P_NORM "kodable-editor"               ; Program name (normalized)
 !define ROOT_DIR "..\.."                      ; Program root directory
 !define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
 !define SYSTEM_DIR "C:\windows\system32"
-!define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
-!define PRODUCT_REG_KEY "Tiled Map Editor"
+!define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\KodableEditor"
+!define PRODUCT_REG_KEY "${P}"
 
 InstallDir "$PROGRAMFILES\${P}"               ; Default installation directory
 Name "${P}"                                   ; Name displayed on installer
@@ -174,7 +174,7 @@ File /oname=NEWS.txt ${ROOT_DIR}\NEWS
 File /oname=LICENSE.APACHE.txt ${ROOT_DIR}\LICENSE.APACHE
 File /oname=LICENSE.BSD.txt ${ROOT_DIR}\LICENSE.BSD
 File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
-File ${BUILD_DIR}\${P_NORM}.dll
+File ${BUILD_DIR}\tiled.dll
 File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
 File ${BUILD_DIR}\tmxrasterizer.exe
@@ -190,7 +190,7 @@ File ${QT_DIR}\bin\icuuc51.dll
 File ${QT_DIR}\bin\icudt51.dll
 File ${SYSTEM_DIR}\MSVCP100.DLL
 File ${SYSTEM_DIR}\MSVCR100.DLL
-File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
+File ${ROOT_DIR}\src\tiled\images\${P_NORM}-icon.ico
 File ${ROOT_DIR}\dist\win\qt.conf
 
 SetOutPath $INSTDIR\plugins\platforms
@@ -229,13 +229,13 @@ CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
+;${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"
 
 ; Add uninstall information to "Add/Remove Programs"
-WriteRegStr HKLM ${ADD_REMOVE} "DisplayName" "Tiled - Tiled Map Editor"
+WriteRegStr HKLM ${ADD_REMOVE} "DisplayName" "Kodable Editor"
 WriteRegStr HKLM ${ADD_REMOVE} "DisplayIcon" "$INSTDIR\${P_NORM}-icon.ico"
 WriteRegStr HKLM ${ADD_REMOVE} "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 WriteRegStr HKLM ${ADD_REMOVE} "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
@@ -266,7 +266,7 @@ Delete $INSTDIR\icuuc51.dll
 Delete $INSTDIR\icudt51.dll
 Delete $INSTDIR\MSVCP100.DLL
 Delete $INSTDIR\MSVCR100.DLL
-Delete $INSTDIR\tiled-icon.ico
+Delete $INSTDIR\${P_NORM}-icon.ico
 Delete $INSTDIR\qt.conf
 Delete $INSTDIR\uninstall.exe
 
@@ -286,7 +286,7 @@ Delete "$SMPROGRAMS\${P}\uninstall.lnk"
 RMDir  "$SMPROGRAMS\${P}"
 
 ; Removing file associations
-${UnRegisterExtension} ".tmx" "Tiled.tmx"
+;${UnRegisterExtension} ".tmx" "Tiled.tmx"
 
 ; Remove Procut Registry Entries
 DeleteRegKey HKLM "Software\${PRODUCT_REG_KEY}"
