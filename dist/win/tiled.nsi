@@ -178,7 +178,6 @@ File ${BUILD_DIR}\tiled.dll
 File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
 File ${BUILD_DIR}\tmxrasterizer.exe
-File ${BUILD_DIR}\automappingconverter.exe
 File ${QT_DIR}\bin\Qt5Core.dll
 File ${QT_DIR}\bin\Qt5Gui.dll
 File ${QT_DIR}\bin\Qt5Widgets.dll
@@ -200,9 +199,6 @@ SetOutPath $INSTDIR\plugins\imageformats
 File ${QT_DIR}\plugins\imageformats\qgif.dll
 File ${QT_DIR}\plugins\imageformats\qjpeg.dll
 File ${QT_DIR}\plugins\imageformats\qtiff.dll
-
-SetOutPath $INSTDIR\plugins\tiled
-File /r ${BUILD_DIR}\plugins\tiled\*.dll
 
 SetOutPath $INSTDIR\translations
 File  ${BUILD_DIR}\translations\*.qm
@@ -251,10 +247,9 @@ Delete $INSTDIR\LICENSE.APACHE.txt
 Delete $INSTDIR\LICENSE.BSD.txt
 Delete $INSTDIR\LICENSE.GPL.txt
 Delete $INSTDIR\tiled.dll
-Delete $INSTDIR\tiled.exe
+Delete $INSTDIR\${P_NORM}.exe
 Delete $INSTDIR\tmxviewer.exe
 Delete $INSTDIR\tmxrasterizer.exe
-Delete $INSTDIR\automappingconverter.exe
 Delete $INSTDIR\Qt5Core.dll
 Delete $INSTDIR\Qt5Gui.dll
 Delete $INSTDIR\Qt5Widgets.dll
@@ -272,7 +267,6 @@ Delete $INSTDIR\uninstall.exe
 
 RMDir /r $INSTDIR\plugins\platforms
 RMDir /r $INSTDIR\plugins\imageformats
-RMDir /r $INSTDIR\plugins\tiled
 RMDir    $INSTDIR\plugins
 RMDir /r $INSTDIR\translations
 RMDir /r $INSTDIR\docs
