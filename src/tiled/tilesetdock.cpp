@@ -220,7 +220,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mMapDocument(0),
     mTabBar(new QTabBar),
     mViewStack(new ViewStack),
-    mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
     mTilesetMenuButton(new TilesetMenuButton(this)),
@@ -250,20 +249,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     vertical->setMargin(5);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
-
-    horizontal = new QHBoxLayout;
-    horizontal->setSpacing(0);
-    horizontal->addWidget(mToolBar, 1);
-    vertical->addLayout(horizontal);
-
-    mToolBar->setIconSize(QSize(16, 16));
-
-    mZoomable = new Zoomable(this);
-    mZoomable->setScale(0.5);
-
-    mZoomComboBox = new QComboBox;
-    mZoomable->connectToComboBox(mZoomComboBox);
-    horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
@@ -326,7 +311,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         foreach (Tileset *tileset, mTilesets) {
             TilesetView *view = new TilesetView;
             view->setMapDocument(mMapDocument);
-            view->setZoomable(mZoomable);
+
+            Zoomable *zoomable = new Zoomable(view);
+            zoomable->setScale(tileset->defaultScale());
+            view->setZoomable(zoomable);
 
             mTabBar->addTab(tileset->name());
             mViewStack->addWidget(view);
@@ -488,7 +476,10 @@ void TilesetDock::tilesetAdded(int index, Tileset *tileset)
 {
     TilesetView *view = new TilesetView;
     view->setMapDocument(mMapDocument);
-    view->setZoomable(mZoomable);
+
+    Zoomable *zoomable = new Zoomable(view);
+    zoomable->setScale(tileset->defaultScale());
+    view->setZoomable(zoomable);
 
     mTilesets.insert(index, tileset);
     mTabBar->insertTab(index, tileset->name());

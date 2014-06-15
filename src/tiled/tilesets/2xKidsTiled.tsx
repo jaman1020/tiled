@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="2xKidsTiled" tilewidth="69" tileheight="69">
+<tileset name="2xKidsTiled" tilewidth="69" tileheight="69" defaultscale="0.66">
  <image source=":/tilesets/2xKidsTiled.png" width="2048" height="1536"/>
  <tile id="0">
   <properties>

@@ -279,6 +279,10 @@ Tileset *MapReaderPrivate::readTileset()
         const int margin =
                 atts.value(QLatin1String("margin")).toString().toInt();
 
+        qreal defaultScale = atts.value(QLatin1String("defaultscale")).toDouble();
+        if (defaultScale <= qreal(0))
+            defaultScale = qreal(1);
+
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
             xml.raiseError(tr("Invalid tileset parameters for tileset"
@@ -286,6 +290,8 @@ Tileset *MapReaderPrivate::readTileset()
         } else {
             tileset = new Tileset(name, tileWidth, tileHeight,
                                   tileSpacing, margin);
+
+            tileset->setDefaultScale(defaultScale);
 
             mCreatedTilesets.append(tileset);
 

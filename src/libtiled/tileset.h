@@ -77,7 +77,8 @@ public:
         mImageWidth(0),
         mImageHeight(0),
         mColumnCount(0),
-        mTerrainDistancesDirty(false)
+        mTerrainDistancesDirty(false),
+        mDefaultScale(1)
     {
         Q_ASSERT(tileSpacing >= 0);
         Q_ASSERT(margin >= 0);
@@ -301,6 +302,9 @@ public:
      */
     void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
 
+    void setDefaultScale(qreal scale) { mDefaultScale = scale; }
+    qreal defaultScale() const { return mDefaultScale; }
+
 private:
     /**
      * Sets tile size to the maximum size.
@@ -327,6 +331,7 @@ private:
     QList<Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
+    qreal mDefaultScale;
 };
 
 } // namespace Tiled

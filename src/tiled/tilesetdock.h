@@ -50,7 +50,6 @@ namespace Internal {
 
 class MapDocument;
 class TilesetView;
-class Zoomable;
 
 class ViewStack : public QStackedWidget
 {
@@ -164,7 +163,6 @@ private:
     QActionGroup *mTilesetActionGroup;
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
 };
 
